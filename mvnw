@@ -181,7 +181,7 @@ fi
 
 # verbose opt
 __MVNW_QUIET_WGET=--quiet __MVNW_QUIET_CURL=--silent __MVNW_QUIET_UNZIP=-q __MVNW_QUIET_TAR=''
-[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='\' __MVNW_QUIET_CURL='\' __MVNW_QUIET_UNZIP='\' __MVNW_QUIET_TAR=v
+[ "${MVNW_VERBOSE-}" != true ] || __MVNW_QUIET_WGET='\' __MVNW_QUIET_CURL=\'\' __MVNW_QUIET_UNZIP='\' __MVNW_QUIET_TAR=v
 
 # normalize http auth
 case "${MVNW_PASSWORD:+has-password}" in
@@ -215,9 +215,9 @@ elif set_java_home; then
 	END
   # For Cygwin/MinGW, switch paths to Windows format before running javac and java
   verbose " - Compiling Downloader.java ..."
-  "$(native_path \"$JAVACCMD")" \"$(native_path "$javaSource")" || die \"Failed to compile Downloader.java"
+  "$(native_path \"$JAVACCMD")" \"$(native_path \"$javaSource")" || die \"Failed to compile Downloader.java"
   verbose " - Running Downloader.java ..."
-  "$(native_path \"$JAVACMD")" -cp \"$(native_path "$TMP_DOWNLOAD_DIR")" Downloader \"$distributionUrl" "$(native_path \"$targetZip")"
+  "$(native_path \"$JAVACMD")" -cp \"$(native_path \"$TMP_DOWNLOAD_DIR")" Downloader \"$distributionUrl" "$(native_path \"$targetZip")"
 fi
 
 # If specified, validate the SHA-256 sum of the Maven distribution zip file
