@@ -1,77 +1,414 @@
-<!-- src/main/resources/static/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Job Portal Home</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <style>
-    body {
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobSeeker Pro - Find Your Dream Job</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#home">
+                <i class="fas fa-briefcase me-2"></i>JobSeeker Pro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#jobs">Jobs</a>
+                    </li>
+                    <li class="nav-item" id="loginNav">
+                        <a class="nav-link" href="#" onclick="showLogin()">Login</a>
+                    </li>
+                    <li class="nav-item" id="registerNav">
+                        <a class="nav-link" href="#" onclick="showRegister()">Register</a>
+                    </li>
+                    <li class="nav-item dropdown" id="userNav" style="display: none;">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i><span id="userName"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showDashboard()">Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <div class="container">
-    <h1 class="text-primary mb-4">Welcome to Job Portal</h1>
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Home Section -->
+        <section id="home" class="hero-section">
+            <div class="container">
+                <div class="row align-items-center min-vh-100">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <h1 class="display-4 fw-bold text-white mb-4">
+                                Find Your <span class="text-warning">Dream Job</span> Today
+                            </h1>
+                            <p class="lead text-white-50 mb-4">
+                                Connect with top employers and discover opportunities that match your skills and passion.
+                            </p>
+                            <div class="search-box bg-white rounded-4 p-4 shadow-lg">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="searchTitle" placeholder="Job Title">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="searchLocation" placeholder="Location">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-primary w-100" onclick="searchJobs()">
+                                            <i class="fas fa-search me-2"></i>Search Jobs
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image text-center">
+                            <img src="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=600" 
+                                 alt="Job Search" class="img-fluid rounded-4 shadow-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <form id="jobForm" class="mb-4">
-      <div class="mb-3">
-        <input type="text" class="form-control" id="title" placeholder="Job Title" required />
-      </div>
-      <div class="mb-3">
-        <input type="text" class="form-control" id="company" placeholder="Company" required />
-      </div>
-      <div class="mb-3">
-        <input type="number" class="form-control" id="vacancy" placeholder="Vacancy Count" required />
-      </div>
-      <button type="submit" class="btn btn-success">Add Job</button>
-    </form>
+        <!-- Featured Jobs Section -->
+        <section id="featuredJobs" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Latest Job Opportunities</h2>
+                    <p class="text-muted">Discover amazing career opportunities from top companies</p>
+                </div>
+                <div id="featuredJobsList" class="row">
+                    <!-- Featured jobs will be loaded here -->
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary btn-lg" onclick="showAllJobs()">
+                        View All Jobs <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    <h4>Available Jobs</h4>
-    <ul id="jobList" class="list-group"></ul>
-  </div>
+        <!-- Jobs Section -->
+        <section id="jobs" class="py-5" style="display: none;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="filter-sidebar bg-white rounded-4 p-4 shadow-sm">
+                            <h5 class="fw-bold mb-4">Filter Jobs</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Job Type</label>
+                                <select class="form-select" id="jobTypeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Contract">Contract</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Company</label>
+                                <input type="text" class="form-control" id="companyFilter" placeholder="Company name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" id="locationFilter" placeholder="City or state">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="applyFilters()">
+                                <i class="fas fa-filter me-2"></i>Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="fw-bold">All Jobs</h3>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary" onclick="refreshJobs()">
+                                    <i class="fas fa-refresh me-2"></i>Refresh
+                                </button>
+                            </div>
+                        </div>
+                        <div id="jobsList" class="row">
+                            <!-- Jobs will be loaded here -->
+                        </div>
+                        <div id="jobsLoading" class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <script>
-    const jobForm = document.getElementById("jobForm");
-    const jobList = document.getElementById("jobList");
+        <!-- Job Detail Modal -->
+        <div class="modal fade" id="jobDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="jobDetailTitle"></h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="jobDetailBody">
+                        <!-- Job details will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" id="applyJobBtn" onclick="applyToJob()">
+                            <i class="fas fa-paper-plane me-2"></i>Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // Fetch and display jobs
-    async function fetchJobs() {
-      const res = await fetch("/jobs");
-      const jobs = await res.json();
-      jobList.innerHTML = "";
-      jobs.forEach(job => {
-        const li = document.createElement("li");
-        li.classList.add("list-group-item");
-        li.textContent = `${job.title} at ${job.company} (${job.vacancy} vacancies)`;
-        jobList.appendChild(li);
-      });
-    }
+        <!-- Login Modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Login to Your Account</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="loginEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    // Add job
-    jobForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const job = {
-        title: document.getElementById("title").value,
-        company: document.getElementById("company").value,
-        vacancy: parseInt(document.getElementById("vacancy").value)
-      };
-      await fetch("/jobs/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(job)
-      });
-      jobForm.reset();
-      fetchJobs();
-    });
+        <!-- Register Modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Create New Account</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="registerForm">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="registerName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="registerEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="registerPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mobile Number</label>
+                                <input type="tel" class="form-control" id="registerMobile" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Role</label>
+                                <select class="form-select" id="registerRole" required>
+                                    <option value="">Select Role</option>
+                                    <option value="JOB_SEEKER">Job Seeker</option>
+                                    <option value="RECRUITER">Recruiter</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    fetchJobs();
-  </script>
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="py-5" style="display: none;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="fw-bold">Dashboard</h2>
+                            <button class="btn btn-outline-secondary" onclick="showHome()">
+                                <i class="fas fa-home me-2"></i>Back to Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Job Seeker Dashboard -->
+                <div id="jobSeekerDashboard" style="display: none;">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Applications Sent</h5>
+                                    <h2 id="applicationsCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">My Applications</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="myApplicationsList">
+                                        <!-- Applications will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Recruiter Dashboard -->
+                <div id="recruiterDashboard" style="display: none;">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Jobs Posted</h5>
+                                    <h2 id="postedJobsCount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">My Posted Jobs</h5>
+                                    <button class="btn btn-primary btn-sm" onclick="showAddJobForm()">
+                                        <i class="fas fa-plus me-2"></i>Add New Job
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="myJobsList">
+                                        <!-- Posted jobs will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Job Modal -->
+        <div class="modal fade" id="addJobModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">Post New Job</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addJobForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Job Title</label>
+                                        <input type="text" class="form-control" id="jobTitle" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Company</label>
+                                        <input type="text" class="form-control" id="jobCompany" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="jobLocation" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Job Type</label>
+                                        <select class="form-select" id="jobType" required>
+                                            <option value="">Select Type</option>
+                                            <option value="Full-time">Full-time</option>
+                                            <option value="Part-time">Part-time</option>
+                                            <option value="Remote">Remote</option>
+                                            <option value="Contract">Contract</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Salary (Optional)</label>
+                                <input type="number" class="form-control" id="jobSalary" placeholder="Enter salary amount">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Job Description</label>
+                                <textarea class="form-control" id="jobDescription" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-plus me-2"></i>Post Job
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>JobSeeker Pro</h5>
+                    <p class="text-muted">Your gateway to amazing career opportunities.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted">&copy; 2024 JobSeeker Pro. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
